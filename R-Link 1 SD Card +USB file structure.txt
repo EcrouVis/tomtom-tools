@@ -1,0 +1,81 @@
+SD Card file structure:
+
+SD Card (FAT32)
+	TOMTOM.000 (split EXT3 volume - sometimes hidden - use R-Link Explorer)
+	…
+	TOMTOM.xxx
+		common/ (data like the map or TTS)
+			installed/
+				TomTom-Cfg/ (not present in a newly initialisated SD card)
+					release.nfo (infos about the map installed?)
+
+				usr/lib/opkg/
+					info/ (empty if it is a newly initialisated SD card)
+						[package name].control (metadatas associated with the package: package name, priority, version, architecture, package ID, section, source, maintainer, description and content type)
+						[package name].list (list of all files contained in the package with their paths relative to the installed folder)
+						[mct/dct]-[package name].control (if the package has a DRM - same as above but for the DRM key)
+						[mct/dct]-[package name].list (if the package has a DRM - same as above but for the DRM key)
+						…
+
+					status (list of all packages installed with metadatas associated: package name, version, status, architecture, package ID, number of installations and description - empty if it is a newly initialisated SD card)
+
+				[map region]/ (exemple of a map folder below)
+					… (folders of installed content)
+
+					[map region].pna (info about the map)
+					[map region]-[number].meta (one of the files with the map datas - ciphered)
+					[map region]-[number].meta.[mct/dct] (DRM key of the map)
+					…
+
+				… (many other folders if not a newly initialisated SD card)
+
+				[???].md5 (contains the MD5 Hashes of all the files in the installed folder with their relative path - don't know if it is mandatory if content is installed - the name appear in  TomTom-Cfg/release.nfo - not present on a newly initialisated SD card)
+
+		device/ (serve to communicate with the PC like a mail box)
+			[MUID]/ (folder for this specific device - not always present?)
+				dispatch/ (contains files in xml format that describe actions to perform on the vehicule or PC side)
+
+				inbox/ (contains files destined to the vehicule - updates)
+
+				outbox/ (contains files destined to the PC and TomTom servers - always ciphered?)
+
+				brand.xml (brand and name of the vehicule in xml format)
+				factory.dat (copy of the flat devicetree of the vehicule - shows the state of the vehicule + other important infos)
+				statusid.enc (?)
+
+			inbox/ (folder where to put updates - exemple below)
+				[package name].ttpkg (the update in a slightly modified tar format to prevent data corruption - exemple below)
+					[package id]/
+						... (package files)
+
+					[package id].ipk (gzip file - describes the data structure? + file same as .control file in usr/lib/opkg/info/)
+					files (files pathes with their SHA-1 hashes)
+					files.sig (signature of files - SHA-1 of files + ciphered with RSA private package key)
+					package.id (contains the package ID)
+					
+
+				jobs.xml (jobs to perform with the update)
+				jobs.xml.sig (signature of job.xml - SHA-1 of jobs.xml + ciphered with RSA private job key)
+				results.xml (where to install the update ?)
+
+			device.dat (contains the machine unique ID or MUID)
+
+		lost+found/ (in case Something bad happend during file transfer - should be empty)
+
+		rsid.dat (contains the rsid)
+		version.dat (not always present - not important)
+
+
+
+
+
+
+
+USB firmware update file structure:
+
+USB (FAT32)
+	TOMTOM.000
+		[update package name].ttpkg
+		jobs.xml
+		jobs.xml.sig
+		results.xml
