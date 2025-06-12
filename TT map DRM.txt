@@ -1,0 +1,12 @@
+xxx.dct/mct                                                                               libttn.so
+Index N                               --------------> N <-------------------------------- Table of Ns
+Ciphered certificate (RSA PKCS1 v1.5) ----\           \----> RSA public key <------------ E (2^16+1)
+                                           \----> Certificate <-------/              /--- Table of UIDs (Machine, Device, SD CID)
+            /-----------------------------------------/ | \---> Index ID ---> ID <---/    Initial Blowfish vector
+            |                                           v            /--------/                           |
+            |                                XORed Blowfish key      |                                    \----------------------\
+            |                                           |            v       "xxx" <----- xxx                                    |
+            |                                           v        MD5 hash <----/          Ciphered data (Blowfish CFB mode)      |
+            |                                    Blowfish Key <------/                            |                              |
+            v                                          | |                                        v                              |
+Checksum == MD5 hash <---------------------------------/ \------------------------------> Deciphered data <----------------------/
