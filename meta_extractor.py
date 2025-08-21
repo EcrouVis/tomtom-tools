@@ -5,6 +5,7 @@
 #How to use:
 #python meta_extractor.py [path to mct file] MediaID=[SD card CID]
 #python meta_extractor.py [path to dct file] MachineID=[Serial number]
+#python meta_extractor.py [path to dct file] DeviceID=[device id]
 
 import sys
 from os import path
@@ -14,7 +15,8 @@ from cryptography.hazmat.primitives.asymmetric.padding import PKCS1v15
 
 from cryptography.hazmat.primitives.hashes import Hash, MD5
 
-CRC7t=[0, 9, 18, 27, 36, 45, 54, 63, 72, 65, 90, 83, 108, 101, 126, 119, 25, 16, 11, 2, 61, 52, 47, 38, 81, 88, 67, 74, 117, 124, 103, 110, 50, 59, 32, 41, 22, 31, 4, 13, 122, 115, 104, 97, 94, 87, 76, 69, 43, 34, 57, 48, 15, 6, 29, 20, 99, 106, 113, 120, 71, 78, 85, 92, 100, 109, 118, 127, 64, 73, 82, 91, 44, 37, 62, 55, 8, 1, 26, 19, 125, 116, 111, 102, 89, 80, 75, 66, 53, 60, 39, 46, 17, 24, 3, 10, 86, 95, 68, 77, 114, 123, 96, 105, 30, 23, 12, 5, 58, 51, 40, 33, 79, 70, 93, 84, 107, 98, 121, 112, 7, 14, 21, 28, 35, 42, 49, 56, 65, 72, 83, 90, 101, 108, 119, 126, 9, 0, 27, 18, 45, 36, 63, 54, 88, 81, 74, 67, 124, 117, 110, 103, 16, 25, 2, 11, 52, 61, 38, 47, 115, 122, 97, 104, 87, 94, 69, 76, 59, 50, 41, 32, 31, 22, 13, 4, 106, 99, 120, 113, 78, 71, 92, 85, 34, 43, 48, 57, 6, 15, 20, 29, 37, 44, 55, 62, 1, 8, 19, 26, 109, 100, 127, 118, 73, 64, 91, 82, 60, 53, 46, 39, 24, 17, 10, 3, 116, 125, 102, 111, 80, 89, 66, 75, 23, 30, 5, 12, 51, 58, 33, 40, 95, 86, 77, 68, 123, 114, 105, 96, 14, 7, 28, 21, 42, 35, 56, 49, 70, 79, 84, 93, 98, 107, 112, 121]
+CRC7t=[0,9,18,27,36,45,54,63,72,65,90,83,108,101,126,119,25,16,11,2,61,52,47,38,81,88,67,74,117,124,103,110,50,59,32,41,22,31,4,13,122,115,104,97,94,87,76,69,43,34,57,48,15,6,29,20,99,106,113,120,71,78,85,92,100,109,118,127,64,73,82,91,44,37,62,55,8,1,26,19,125,116,111,102,89,80,75,66,53,60,39,46,17,24,3,10,86,95,68,77,114,123,96,105,30,23,12,5,58,51,40,33,79,70,93,84,107,98,121,112,7,14,21,28,35,42,49,56,65,72,83,90,101,108,119,126,9,0,27,18,45,36,63,54,88,81,74,67,124,117,110,103,16,25,2,11,52,61,38,47,115,122,97,104,87,94,69,76,59,50,41,32,31,22,13,4,106,99,120,113,78,71,92,85,34,43,48,57,6,15,20,29,37,44,55,62,1,8,19,26,109,100,127,118,73,64,91,82,60,53,46,39,24,17,10,3,116,125,102,111,80,89,66,75,23,30,5,12,51,58,33,40,95,86,77,68,123,114,105,96,14,7,28,21,42,35,56,49,70,79,84,93,98,107,112,121]
+BASE32t="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
 def crc7(data):
     crc = 0
@@ -49,9 +51,9 @@ Nk=["8eb7e533ae188f853a949da949c1ce953f0d6db8777b82ee5f7e5b4349e82ceddff9a029eb5
     "c657f0ee5ef35a35f1e3a8dfbfcc0a257862853337e6cc78fd5bae17e912b31b7fd26621dad5063f6d793beb60c4909e4746c58cead2c23774381b306305a1f9cb1f89328a285f728991fffd16e92574a7c74b3f992ad4c32c4b388d3b424bd176dd08bc0dbb86cbb5dcd30e3af7a858f9fa7b7c08fd1459cc6fa9096c290103",
     "a520285d1a1cdd6c66226094a4235e57345cc81e49ecafc61046a33dc90a284da40839e8679575b55ce900defb3ea38b762ca18807aeea5289c10f3bb34cd1b7a6de787cf2733edb70034bee7566febfd4abcffecdf188365c6dba565ccce22360caa6d08e7e98ef8d7485663ae394d522176abbc7d3d0e83ca08299d783660d"]
 
-MachineID=""#Serial number, MUID or device-serial (2 letters + 10 numbers) (not tested yet, I don't have a valid dct file)
-DeviceID=""#I don't know yet what is this ID
-MediaID=""#SD card CID
+MachineID=""#Serial number, MUID, device-serial or DeviceSerialNumber (2 letters + 10 numbers)
+DeviceID=""#DeviceUniqueID in ttgo.bif (10 letters/numbers) (MachineID but shorter + checksum and Base32 encoded)
+MediaID=""#SD card CID (same as SDCardId in ttgo.bif?) (16 bytes, passed to the program in hexadecimal form, could try recover the CRC part if missing)
 
 fn=sys.argv[1]
 if len(sys.argv)>2:
@@ -88,11 +90,13 @@ nID=int.from_bytes(CERT[:0x04],byteorder="little")#get type of certificate descr
 if nID&0x02:
     if MachineID=="":
         print("Variable MachineID is not set")
+        exit()
     vMD5+=MachineID.encode("utf-8")
 else:
     if nID&0x04:
         if MediaID=="":
             print("Variable MediaID is not set")
+            exit()
         try:
             bytes.fromhex(MediaID)
         except:
@@ -117,7 +121,45 @@ else:
         vMD5+=b
     else:
         if DeviceID=="":
-            print("Variable DeviceID is not set")
+            print("Variable DeviceID is not set, attempting to compute DeviceID with MachineID")
+            if MachineID=="":
+                print("Variable MachineID is not set")
+                exit()
+            a=MachineID.encode("utf-8")
+            if len(a)<5:
+                a+=b"*"*(5-len(a))
+            if len(a)>5:
+                #they screw up the algorithm so here is an equivalent and simpler one
+                a=bytes([2,a[0]^a[-4],a[1]^a[-3],a[2]^a[-2],a[3]^a[-1]])
+            cs=1
+            for i in range(5):
+                cs+=a[i]
+            cs=cs&0xff
+            a+=int.to_bytes(cs)
+            a=int.from_bytes(a,byteorder="big")
+            for _ in range(10):
+                b=(a>>(3+8*5))&0x1f
+                a=a<<5
+                DeviceID+=BASE32t[b]
+            print("DeviceID should be",DeviceID)
+        else:
+            DeviceID=DeviceID.upper().replace(" ","")
+            a=0
+            for c in DeviceID:
+                if c not in BASE32t:
+                    print("DeviceID",DeviceID,"is incorrect:",c,"is not part of base32 encoding chars")
+                    exit()
+                a=(a<<5)|(BASE32t.find(c))
+            a=a>>2
+            cs=a^0xff
+            b=1
+            for _ in range(5):
+                a=a>>8
+                b+=a&0xff
+            b=b&0xff
+            if b!=cs:
+                print("Checksum in DeviceID is incorrect: got",hex(b),"but",hex(cs),"was expected")
+                exit()
         vMD5+=DeviceID.encode("utf-8")
 
 digest=Hash(MD5())
@@ -128,7 +170,7 @@ BK=bytes(a ^ b for a, b in zip(d1, CERT[0x04:0x14]))#bitwise xor to get the blow
 digest=Hash(MD5())
 digest.update(BK)
 d2=digest.finalize()
-
+print(CERT)
 if d2!=CERT[0x14:0x24]:#checksum to validate that the key is ok
     print("Hash doesn't match checksum:")
     print("The ID used for decryption as a wrong value or the mct/dct file was renamed")
