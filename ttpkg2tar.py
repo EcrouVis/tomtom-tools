@@ -14,23 +14,22 @@ for file_name in sys.argv[1:]:
         f=open(file_name,mode="rb")#essentially ttpkg is a tar file with extra data
 
         h=f.read(8)
-        header={"flags":[]}
-        if h==b"_unprot_":#sometimes it is the first thing in the ttpkg / don't know what it does -> skip
-            header["flags"].append("_unprot_")
+        header={}
+        if h==b"_unprot_":#sometimes it is the first thing in the ttpkg / present if a part of the header is not protected against corruption
+            header["_unprot_"]={}
             h=f.read(8)
-        if int.from_bytes(h[4:],byteorder="little")!=0:#header before the archive size / could be present or not
             hn=int.from_bytes(h[:4],byteorder="little")#number of header fields
             hs=int.from_bytes(h[4:],byteorder="little")#length of the header
             h=f.read(hs)
             h=h.split(b"\x00")
             for n in range(hn):#extract the fields
                 hi=h[n].split(b"=",1)
-                header[hi[0].decode("utf-8")]=hi[1].decode("utf-8")
+                header["_unprot_"][hi[0].decode("utf-8")]=hi[1].decode("utf-8")
             h=f.read(8)
 
         header["size"]=int.from_bytes(h,byteorder="little")#archive size from this point to the end of file without counting the interblocks
 
-        file_interblock_signature=[f.read(file_interblock_length)]#first interblock (they are 20 octets long and there is one every 102400+20 octets -> file system stuff?)
+        file_interblock_signature=[f.read(file_interblock_length)]#first interblock (they are 20 octets long and there is one every 102400+20 octets -> SHA-1 of the comming block or the entire file in case of a system update?)
 
         h=f.read(8)#header after the archive size / same kind as the first header
         hn=int.from_bytes(h[:4],byteorder="little")
