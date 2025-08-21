@@ -30,7 +30,7 @@ xxx:
 	length of xxx -Sxs -4*(nRNck+8) bytes
 	Hfn: MD5 hash of xxx filename
 	16 bytes
-	t2: timestamp - t1<=t2
+	t1: timestamp - t1<=t2
 	4bytes
 	RNck: list of revoked Nck for xxx file only
 	4*nRNck bytes
@@ -52,7 +52,7 @@ C:
 	16 bytes
 	Hm: meta code MD5 hash
 	16 bytes
-	t1: timestamp - t1<=t2
+	t2: timestamp - t1<=t2
 	4 bytes
 	nRNk: number (?) of revoked Nck/Nsk (infinite loop revoking the first RNk in my libttn.so ???)
 	4bytes
@@ -127,4 +127,5 @@ Ns table:
 	d0496a3a6bc479fa63568b0c6ebb5bdba54e1b7a86e0e945f08d0e6341bbe28928bff34fdc1626c0a594b0bea5a76b2275f16857eda7b9326b695e3df8a42bbe2fbd51ca2893293d1cb6df7af9365818018d1baffe799f343632da75d37464eff106117d69bd2763284d3d8e611abd9b634ecd171d51b37a99fe2d36a5313c15
 	8460ef64901c900563619abaa6aa82c51113fec24dd79a79821babf10148d31043663450098f7d4437aa9e92b3a647f3a4fa8cbb1e52f1d135230a635be27bddcdc1ce8cdd4307bbd41c1744a9663d76427eb576a2e7d1ee601f21c324cc298f599646afd04a399c417e939331f57bb903585a4915298bac89c2ed738a69c149
 	99876215753b16d509d94eae14cdc14992abedde60e8588233830a5f6c7ddb913d5e968b864661da8267265e91ae0d331d9779cdc8178177a8143bb76871735ff0998e412ce306844b41d87144956e2cdfcb543f3975a22639c3489ab2b6b403496fc94dcf0723a75a4dd809fd2478bdf49c27f882e29176cb20cc378719fcbb
+
 
