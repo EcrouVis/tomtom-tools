@@ -18,7 +18,7 @@ if len(sys.argv)>3:
     print("Too many arguments")
     exit()
 fn=sys.argv[1]
-meta=sys.argv[2].split(";")[0].replace(" ","")
+meta=sys.argv[2].split(";")[0].replace(" ","")[:32]
 
 if not os.path.isfile(fn):
     print(fn,"does not exist")
@@ -70,3 +70,4 @@ f.close()
 g.close()
 
 print("File decrypted")
+
