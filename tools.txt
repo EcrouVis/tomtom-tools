@@ -1,0 +1,7 @@
+Tools to work with files:
+SD card content: 7Zip, R-Link Explorer
+tar: 7Zip
+Copy/Restore SD card content: imageUSB (with an external SD card reader / read the log file before using the bin file)
+Read file content (hexadecimal): HxD
+Modify file/dumped image: HxD
+Mount dumped image: OSFMount
